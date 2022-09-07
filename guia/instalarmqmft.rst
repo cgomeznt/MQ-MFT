@@ -21,17 +21,12 @@ Garantizar que el DNS este respondiendo adecuadamente.
 NOTA: MQ corre bajo una maquina virtual de JAVA, pero no es necesario instalarla porque ya viene embebida en el MQ MFT.
 
 
-2.‐ Bajamos los instaladores de la pagina del fabricante, los archivos son:
+2.‐ Bajamos los instaladores de la pagina del fabricante, los archivos son::
 
-IBM_MQ_9.1_LINUX_X86-64.tar.gz
+	IBM_MQ_9.1_LINUX_X86-64.tar.gz
 
-WS_MQ_LINUX_ON_X86_64_7.5.0.2_IMG.tar.gz
-
-WS_MQ_CLIENT_LIN_X86_64_7.5.0.2.tar.gz
-
-MANAGED_FT_AGENT_4690_7.5.0.2_IMG.zip
-
- y se colocan en un directorio temporal, en este caso: /opt/mq_instaladores
+ 
+y se colocan en un directorio temporal, en este caso: /opt/mq_instaladores
 
 3.‐ Descomprimimos IBM_MQ_9.1_LINUX_X86-64.tar.gz::
 
@@ -601,11 +596,11 @@ Nos aseguramos que tengamos todos los env necesarios::
 	COMMANDER_PORT=1416
 	XDG_SESSION_ID=2
 	HOSTNAME=mq-server
-	AS400_CLIENT=CRC03AGN
+	SRVFS_CLIENT=SRVFSAGN
 	SHELL=/bin/bash
 	TERM=xterm-256color
 	HISTSIZE=1000
-	AS400_CLIENT_PORT=1418
+	SRVFS_CLIENT_PORT=1418
 	USER=mqm
 	LCOMMANDER=CRC01CMM
 	COORDINATOR=CRC01CRD
@@ -703,36 +698,36 @@ Nos vamos a la ruta en donde están los scripts::
 
 
      1 : DEFINE TOPIC('SYSTEM.FTE') TOPICSTR('SYSTEM.FTE') REPLACE
-AMQ8690I: IBM MQ topic created.
-     2 : ALTER TOPIC('SYSTEM.FTE') NPMSGDLV(ALLAVAIL) PMSGDLV(ALLAVAIL)
-AMQ8691I: IBM MQ topic changed.
-     3 : DEFINE QLOCAL(SYSTEM.FTE) LIKE(SYSTEM.BROKER.DEFAULT.STREAM) REPLACE
-AMQ8006I: IBM MQ queue created.
-     4 : ALTER QLOCAL(SYSTEM.FTE) DESCR('Stream for MQMFT Pub/Sub interface')
-AMQ8008I: IBM MQ queue changed.
-       : * Altering namelist: SYSTEM.QPUBSUB.QUEUE.NAMELIST
-       : * Value prior to alteration:
-     5 : DISPLAY NAMELIST(SYSTEM.QPUBSUB.QUEUE.NAMELIST)
-AMQ8550I: Display namelist details.
-   NAMELIST(SYSTEM.QPUBSUB.QUEUE.NAMELIST)
-   NAMCOUNT(2)                          
-   NAMES(SYSTEM.BROKER.DEFAULT.STREAM   
-        ,SYSTEM.BROKER.ADMIN.STREAM)    
-   DESCR(A list of queues for the queued Pub/Sub interface to monitor)
-   ALTDATE(2022-09-06)                     ALTTIME(17.07.08)
-     6 : ALTER NAMELIST(SYSTEM.QPUBSUB.QUEUE.NAMELIST) +
-       :  NAMES(SYSTEM.BROKER.DEFAULT.STREAM+
-       :  ,SYSTEM.BROKER.ADMIN.STREAM,SYSTEM.FTE)
-AMQ8551I: IBM MQ namelist changed.
-       : * Altering PSMODE.  Value prior to alteration:
-     7 : DISPLAY QMGR PSMODE
-AMQ8408I: Display Queue Manager details.
-   QMNAME(CRC01CRD)                        PSMODE(ENABLED)
-     8 : ALTER QMGR PSMODE(ENABLED)
-AMQ8005I: IBM MQ queue manager changed.
-8 MQSC commands read.
-No commands have a syntax error.
-All valid MQSC commands were processed.
+	AMQ8690I: IBM MQ topic created.
+	     2 : ALTER TOPIC('SYSTEM.FTE') NPMSGDLV(ALLAVAIL) PMSGDLV(ALLAVAIL)
+	AMQ8691I: IBM MQ topic changed.
+	     3 : DEFINE QLOCAL(SYSTEM.FTE) LIKE(SYSTEM.BROKER.DEFAULT.STREAM) REPLACE
+	AMQ8006I: IBM MQ queue created.
+	     4 : ALTER QLOCAL(SYSTEM.FTE) DESCR('Stream for MQMFT Pub/Sub interface')
+	AMQ8008I: IBM MQ queue changed.
+	       : * Altering namelist: SYSTEM.QPUBSUB.QUEUE.NAMELIST
+	       : * Value prior to alteration:
+	     5 : DISPLAY NAMELIST(SYSTEM.QPUBSUB.QUEUE.NAMELIST)
+	AMQ8550I: Display namelist details.
+	   NAMELIST(SYSTEM.QPUBSUB.QUEUE.NAMELIST)
+	   NAMCOUNT(2)                          
+	   NAMES(SYSTEM.BROKER.DEFAULT.STREAM   
+		,SYSTEM.BROKER.ADMIN.STREAM)    
+	   DESCR(A list of queues for the queued Pub/Sub interface to monitor)
+	   ALTDATE(2022-09-06)                     ALTTIME(17.07.08)
+	     6 : ALTER NAMELIST(SYSTEM.QPUBSUB.QUEUE.NAMELIST) +
+	       :  NAMES(SYSTEM.BROKER.DEFAULT.STREAM+
+	       :  ,SYSTEM.BROKER.ADMIN.STREAM,SYSTEM.FTE)
+	AMQ8551I: IBM MQ namelist changed.
+	       : * Altering PSMODE.  Value prior to alteration:
+	     7 : DISPLAY QMGR PSMODE
+	AMQ8408I: Display Queue Manager details.
+	   QMNAME(CRC01CRD)                        PSMODE(ENABLED)
+	     8 : ALTER QMGR PSMODE(ENABLED)
+	AMQ8005I: IBM MQ queue manager changed.
+	8 MQSC commands read.
+	No commands have a syntax error.
+	All valid MQSC commands were processed.
 
 
 6.‐ Para Crear el Commander ejecutar el script: create‐commander.sh::
