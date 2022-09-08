@@ -30,14 +30,14 @@ y se colocan en un directorio temporal, en este caso: /opt/mq_instaladores
 
 3.‐ Descomprimimos IBM_MQ_9.1_LINUX_X86-64.tar.gz::
 
-	# mkdir –p /opt/mq_instaladores/mqm
+	# mkdir -p /opt/mq_instaladores/mqm
 	# tar ‐xvf IBM_MQ_9.1_LINUX_X86-64.tar.gz ‐C /opt/mq_instaladores/mqm
 
-Visulizar el contenido::
+Visualizar el contenido::
 
 	# ls
 	MQServer
-	# cd MQServer/
+	# cd /opt/mq_instaladores/mqm/MQServer/
 	# ls
 	Advanced                             MQSeriesFTService-9.1.0-0.x86_64.rpm  MQSeriesMsg_pl-9.1.0-0.x86_64.rpm
 	copyright                            MQSeriesFTTools-9.1.0-0.x86_64.rpm    MQSeriesMsg_pt-9.1.0-0.x86_64.rpm
@@ -60,7 +60,7 @@ Visulizar el contenido::
 
 	/opt/mq_instaladores/mqm/MQServer/mqlicense.sh ‐‐text_only
 
-Pulsamo 1, para aceptar la licencia::
+Pulsamos 1, para aceptar la licencia::
 
 	Pulse Intro para seguir visualizando el acuerdo de 
 	licencia, o entre "1" para aceptar el acuerdo, "2" para no 
@@ -202,8 +202,7 @@ Ahora corregimos el máximo de archivos y de hilos::
 	kernel.threads-max = 32768
 
 
-7.3 Ejecutar el comando su mqm -c "/opt/mqm/bin/mqconfig" no debería salir ningún FAIL ni
-WARNING::
+7.3 Ejecutar el comando su mqm -c "/opt/mqm/bin/mqconfig" no debería salir ningún FAIL ni WARNING::
 
 
 	# su mqm -c "/opt/mqm/bin/mqconfig" 
@@ -271,15 +270,15 @@ Verificando la correcta instalación (Ejecutar este paso es opcional, al finaliz
 
 1.‐ Local (Ambos Qmanager en el mismo Equipo)
 
-1.1.‐ Nos cambiamos al usuario mqm y nos ubicamos al directorio MQ_INSTALLATION_PATH/bin (El instalador crea el usuario)::
+1.1.‐ Nos cambiamos al usuario mqm, copiamos el bashrc en .profile (El instalador crea el usuario)::
 
-	# su – mqm
-	# cd /opt/mqm/bin
-
-Nos aseguramos de crear el .profile si no existe dentro del home del usuario mqm::
-
+	# su - mqm
 	$ cp /etc/bashrc .profile
 	$ source .profile
+
+En el directorio MQ_INSTALLATION_PATH/bin, estan los binarios::
+
+	# cd  /opt/mqm/bin
 
 1.2.‐ Ejecutamos los comandos, para setear las variables de ambientes de mq y con el segundo comando vemos los
 datos de las variables::
@@ -306,7 +305,7 @@ datos de las variables::
 	MaxCmdLevel: 910
 	LicenseType: Production
 
-1.3.‐ Creamos un Q Manager llamado QMA::
+1.3.‐ Con crtmqm creamos un QManager llamado QMA::
 
 	$ crtmqm QMA
 	IBM MQ queue manager created.
@@ -317,7 +316,7 @@ datos de las variables::
 	Completing setup.
 	Setup completed.
 
-1.4.‐ Iniciamos el QMananger::
+1.4.‐ Con strmqm iniciamos el QMananger::
 
 	$ strmqm QMA
 	IBM MQ queue manager 'QMA' starting.
@@ -327,21 +326,24 @@ datos de las variables::
 	Transaction manager state recovered for queue manager 'QMA'.
 	IBM MQ queue manager 'QMA' started using V9.1.0.0.
 
-1.5.‐ Iniciamos la consola de comando de MQ para trabajar con el QManager recién creado, IMPORTANTE dentro de ella es que se va escribir otros comandos::
+Con el comando dspmq podremos ver el Qmanager::
+
+	$ dspmq
+	QMNAME(QMA)                                               STATUS(Running)
+
+1.5.‐ Con runmqsc iniciamos la consola de comando de MQ para trabajar con el QManager recién creado, IMPORTANTE se abre un CLI y dentro de ella es que se va escribir otros comandos::
 
 	$ runmqsc QMA
 	5724-H72 (C) Copyright IBM Corp. 1994, 2018.
 	Starting MQSC for queue manager QMA.
 
-1.6.‐ Creamos una cola local de pruebas llamada QUEUE1 (Esto es dentro del CLI que dejo abierto el comando anterior, Escribimos esto:
-
-DEFINE QLOCAL (QUEUE1)::
+1.6.‐ Creamos una cola local de pruebas llamada QUEUE1 (Esto es dentro del CLI que dejo abierto el comando anterior, Escribimos esto, DEFINE QLOCAL (QUEUE1)::
 
 	DEFINE QLOCAL (QUEUE1)
 	     1 : DEFINE QLOCAL (QUEUE1)
 	AMQ8006I: IBM MQ queue created.
 
-Luego escribimos end::
+Luego escribimos, end::
 
 	end
 	     2 : end
@@ -378,9 +380,7 @@ Luego escribimos end::
 	Sample AMQSGET0 end
 
 2.‐ Remoto (Qmanagers en servidores Diferentes)
-Para probar de forma remota necesitamos dos equipos uno que sea el Sender y otro el Receiver, en nuestro caso 
-
-mq‐fte01 será el sender y mq‐fte‐02 será el reciver.
+Para probar de forma remota necesitamos dos equipos uno que sea el Sender y otro el Receiver, en nuestro caso mq‐fte01 será el sender y mq‐fte‐02 será el reciver.
 
 
 2.1.‐ En el receiver::
@@ -444,25 +444,25 @@ Ejecutar un netstat -natp | grep -i listen y veremos el puerto 1414 en escucha :
 	tcp6       0      0 :::22                   :::*                    LISTEN      875/sshd            
 	tcp6       0      0 ::1:25                  :::*                    LISTEN      970/master  
 
+Y consultamos los Qmanager que hemos creado hasta el momento::
 
-2.2.‐ En el Sender, como estos comando ya los ejecutamos en las primeras pruebas 
+	$ dspmq
+	QMNAME(QMA)                                               STATUS(Running)
+	QMNAME(QMB)                                               STATUS(Running)
 
-$ crtmqm QMA # Nos dirá AMQ8110E: IBM MQ queue manager already exists.
 
-$ strmqm QMA # Nos IBM MQ queue manager running::
+2.2.‐ En el Sender, ejecutaremos  el comando crtmqm y como ya los ejecutamos en las primeras pruebas, nos dirá que el Qmanager ya existe.
 
 	$ crtmqm QMA 
 	AMQ8110E: IBM MQ queue manager already exists.
-	
+
+2.3.- Ejecutamos el strmqm para iniciar el CLI y escribir lo siguiente::
+
 	$ strmqm QMA 
 	IBM MQ queue manager running.
 
 
-	DEFINE QREMOTE (LOCAL.DEF.OF.REMOTE.QUEUE) RNAME (RECEIVER.Q) RQMNAME ('QMB') XMITQ (QMB)
-
-	DEFINE CHANNEL (QMA.QMB) CHLTYPE (SDR) CONNAME ('192.168.1.110(1414)') XMITQ (QMB) TRPTYPE (TCP)
-
-En el comando strmqm QMA, ejecutar los siguientes CLI::
+En el comando strmqm QMA, ejecutar los siguientes comandos dentro del CLI::
 
 	DEFINE QLOCAL (QMB) USAGE (XMITQ)
 	DEFINE QREMOTE (LOCAL.DEF.OF.REMOTE.QUEUE) RNAME (RECEIVER.Q) RQMNAME ('QMB') XMITQ (QMB)
@@ -505,7 +505,7 @@ Esta es la ejecución del comando anterior y sus salidas::
 	All valid MQSC commands were processed.
 
 
-2.3.‐ Colocamos un mensaje en la cola del sender para probar, un enter para salir del CLI::
+2.3.‐ Colocamos un mensaje en la cola del sender para probar, Escribimos un mensaje y luego un par de enter para salir del CLI::
 
 	$ ./amqsput LOCAL.DEF.OF.REMOTE.QUEUE QMA
 	Sample AMQSPUT0 start
@@ -514,7 +514,7 @@ Esta es la ejecución del comando anterior y sus salidas::
 
 	Sample AMQSPUT0 end
 
-2.4.‐ En el receiver leemos los mensajes, un enter para salir del CLI::
+2.4.‐ En el receiver leemos los mensajes, un par de enter para salir del CLI::
 
 	$ ./amqsget RECEIVER.Q QMB
 	Sample AMQSGET0 start
@@ -523,6 +523,38 @@ Esta es la ejecución del comando anterior y sus salidas::
 
 	no more messages
 	Sample AMQSGET0 end
+
+3.- Vamos a detener los Qmanager de prueba QMA y el QMB, para borrarlos::
+
+	$ dspmq
+	QMNAME(QMA)                                               STATUS(Running)
+	QMNAME(QMB)                                               STATUS(Running)
+
+Los detenemos::
+
+	$ endmqm QMA
+	Quiesce request accepted. The queue manager will stop when all outstanding work
+	is complete.
+
+	$ endmqm QMB
+	Quiesce request accepted. The queue manager will stop when all outstanding work
+	is complete.
+
+	$ dspmq
+	QMNAME(QMA)                                               STATUS(Ended normally)
+	QMNAME(QMB)                                               STATUS(Ended normally)
+
+Los eliminamos::
+
+	$ dltmqm QMA
+	IBM MQ queue manager 'QMA' deleted.
+
+	$ dltmqm QMB
+	IBM MQ queue manager 'QMB' deleted.
+
+	$ dspmq
+	$ 
+
 
 Creación de Usuario para conexión de Agentes.
 ++++++++++++++++++++++++++++++++++++++++++++
