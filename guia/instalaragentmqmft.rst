@@ -1,3 +1,6 @@
+Instalar un Agente MQ MFT en Linux
+=====================================
+
 1.‐ Debemos tener instaladas los paquetes libgcc y libstdc++::
 
 	# rpm -qa | egrep "libgcc|libstdc++"
@@ -12,23 +15,21 @@ Le colocamos un nombre al servidor::
 
 Garantizar que el DNS este respondiendo adecuadamente.
 
-NOTA: MQ corre bajo una maquina virtual de JAVA, pero no es necesario instalarla porque ya viene embebida en el MQ MFT.
+**NOTA**: MQ corre bajo una maquina virtual de JAVA, pero no es necesario instalarla porque ya viene embebida en el MQ MFT.
 
 2.‐ Bajamos los instaladores de la pagina del fabricante, los archivos son::
 
 	IBM_MQ_9.1_LINUX_X86-64.tar.gz
 
-NOTA: Ya en MQ MFT el mismo instalador en donde viene el server, ya trae el instalador del agente.
-Anteriormente en MQ FTE el instalador del server y el instalador del agente, eran totalmente distintos
+**NOTA**: Ya en MQ MFT el mismo instalador en donde viene el server, ya trae el instalador del agente. Anteriormente en MQ FTE el instalador del server y el instalador del agente, eran totalmente distintos
 
-y se colocan en un directorio temporal, en este caso: /opt/mq_instaladores
 
-3.‐ Descomprimimos IBM_MQ_9.1_LINUX_X86-64.tar.gz::
+3.‐ Descomprimimos IBM_MQ_9.1_LINUX_X86-64.tar.gz y se colocan en un directorio temporal, en este caso: /opt/mq_instaladores::
 
 	# mkdir -p /opt/mq_instaladores/mqm
 	# tar ‐xvf IBM_MQ_9.1_LINUX_X86-64.tar.gz ‐C /opt/mq_instaladores/mqm
 
-Visulizar el contenido::
+4.- Visualizar el contenido::
 
 	# ls
 	MQServer
@@ -50,7 +51,7 @@ Visulizar el contenido::
 	MQSeriesFTLogger-9.1.0-0.x86_64.rpm  MQSeriesMsg_ko-9.1.0-0.x86_64.rpm     repackage
 
 
-4.‐ Aceptamos la licencia::
+5.‐ Aceptamos la licencia::
 
 	# /opt/mq_instaladores/mqm/MQServer/mqlicense.sh  --accept
 
@@ -66,7 +67,7 @@ Pulsamos 1, para aceptar la licencia::
 	Agreement accepted:  Proceed with install.
 
 
-5.‐ Solo instalamos los siguientes componentes::
+6.‐ Solo instalamos los siguientes componentes::
 	MQSeriesRuntime-9.1.0-0
 	MQSeriesJRE-9.1.0-0
 	MQSeriesJava-9.1.0-0  
@@ -77,23 +78,23 @@ Pulsamos 1, para aceptar la licencia::
 	MQSeriesFTLogger-9.1.0-0
 	MQSeriesFTTools-9.1.0-0
 
-6.- instalar los componentes ejecutando::
+7.- instalar los componentes ejecutando::
 
 	# rpm -ivh /opt/mq_instaladores/mqm/MQServer/MQSeriesRuntime*
 	# rpm -ivh /opt/mq_instaladores/mqm/MQServer/MQSeriesJ*
 	# rpm -ivh /opt/mq_instaladores/mqm/MQServer/MQSeriesServer*
 	# rpm -ivh /opt/mq_instaladores/mqm/MQServer/MQSeriesFT*
 
-Automáticamente se crean los binarios en la ruta /opt/mqm/bin. Ingresar al archivo /etc/bashrc  ó /etc/profile, Anadir líneas::
+8.- Automáticamente se crean los binarios en la ruta /opt/mqm/bin. Ingresar al archivo /etc/bashrc  ó /etc/profile, Anadir líneas::
 
 	# vi /etc/bashrc
 	export PATH=$PATH:/opt/mqm/bin
 
 
-7.3 Es bueno ejecutar el comando su mqm -c "/opt/mqm/bin/mqconfig" para ver los FAIL y WARNING, que se deben corregir::
+9.- Es bueno ejecutar el comando su mqm -c "/opt/mqm/bin/mqconfig" para ver los FAIL y WARNING, que se deben corregir::
 
 
-1.1.‐ Nos cambiamos al usuario mqm, (El instalador crea el usuario)::
+10.‐ Nos cambiamos al usuario mqm, (El instalador crea el usuario)::
 
 	# su - mqm
 	$ cp /etc/bashrc .profile
@@ -104,7 +105,7 @@ En el directorio MQ_INSTALLATION_PATH/bin, estan los binarios::
 	$ ls  /opt/mqm/bin
 
 
-1.2.- Ejecutamos el comando crtmqenv -s ::
+11.- Ejecutamos el comando crtmqenv -s ::
 
 	$ crtmqenv -s
 	CLASSPATH=/opt/mqm/java/lib/com.ibm.mq.jar:/opt/mqm/java/lib/com.ibm.mqjms.jar:/opt/mqm/java/lib/com.ibm.mq.allclient.jar:/opt/mqm/samp/wmqjava/samples:/opt/mqm/samp/jms/samples
@@ -121,13 +122,13 @@ En el directorio MQ_INSTALLATION_PATH/bin, estan los binarios::
 	MQ_JRE_PATH=/opt/mqm/java/jre64/jre
 	PATH=/opt/mqm/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin
 
-El comando anterior es una muy buena idea dejarlo en .profile
+El comando anterior es una muy buena idea hacer un stdout hacia .profile
 
-Ejecutamos el siguiente comando para crear el Coordinator::
+12.- Ejecutamos el siguiente comando para crear el Coordinator::
 
 	$ fteSetupCoordination -coordinationQMgr CRC01CRD -coordinationQMgrHost 192.168.1.110 -coordinationQMgrPort 1414 -coordinationQMgrChannel SYSTEM.DEF.SVRCONN
 
-Ejecucion y salida del comando anterior::
+Ejecución y salida del comando anterior::
 
 	$ fteSetupCoordination -coordinationQMgr CRC01CRD -coordinationQMgrHost 192.168.1.110 -coordinationQMgrPort 1414 -coordinationQMgrChannel SYSTEM.DEF.SVRCONN
 	5724-H72 Copyright IBM Corp.  2008, 2018.  ALL RIGHTS RESERVED
@@ -152,7 +153,7 @@ Ejecucion y salida del comando anterior::
 
 
 
-Ejecutamos el siguiente comando para crear el Commander::
+13.- Ejecutamos el siguiente comando para crear el Commander::
 
 	$ fteSetupCommands -connectionQMgr CRC01CMM -connectionQMgrHost 192.168.1.110 -connectionQMgrPort 1416 -connectionQMgrChannel SYSTEM.DEF.SVRCONN
 
@@ -329,20 +330,22 @@ Ejecucion y salida del comando anterior::
 	BFGCL0254I: Agent configured successfully. The agent has not been registered with the coordination queue manager.
 
 
-Iniciamos el agente con el comando
+14.- Iniciamos el agente con el comando::
+
 	$ fteStartAgent SRVFSAGN.AG
 
-Ejecucion y salida del comando anterior::
+Ejecución y salida del comando anterior::
 
 	$ fteStartAgent SRVFSAGN.AG
 	5724-H72 Copyright IBM Corp.  2008, 2018.  ALL RIGHTS RESERVED
 	BFGCL0030I: The request to start agent 'SRVFSAGN.AG' on this machine has been submitted.
 	BFGCL0031I: Agent log files located at: /var/mqm/mqft/logs/CRC01CRD/agents/SRVFSAGN.AG/logs
 
-Detener el agente con el comando
+15.- Detener el agente con el comando::
+
 	$ fteStopAgent SRVFSAGN.AG
 
-Ejecucion y salida del comando anterior::
+Ejecución y salida del comando anterior::
 
 	$ fteStopAgent SRVFSAGN.AG
 	5724-H72 Copyright IBM Corp.  2008, 2018.  ALL RIGHTS RESERVED
@@ -350,10 +353,11 @@ Ejecucion y salida del comando anterior::
 	BFGCL0468I: Issuing stop request to agent 'SRVFSAGN.AG'. The command will wait for the agent to stop. The agent will stop only when all current transfers have completed.
 	BFGCL0553I: The agent has processed the stop request and will end when all current transfers have completed.
 
-Eliminar el agente con el comando
+16.- Eliminar el agente con el comando::
+
 	$ fteDeleteAgent SRVFSAGN.AG
 
-Ejecucion y salida del comando anterior::
+Ejecución y salida del comando anterior::
 
 	$ fteStopAgent SRVFSAGN.AG
 	5724-H72 Copyright IBM Corp.  2008, 2018.  ALL RIGHTS RESERVED
@@ -369,7 +373,7 @@ Ejecucion y salida del comando anterior::
 	BFGPR0127W: No credentials file has been specified to connect to IBM MQ. Therefore, the assumption is that IBM MQ authentication has been disabled.
 
 
-Comprobamos conexión con el siguiente comando::
+17.- Comprobamos conexión con el siguiente comando::
 
 	$ netstat -nat | grep 1418
 
