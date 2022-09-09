@@ -2,6 +2,7 @@ Crear una transferencia Manual
 ====================================
 
 ::
+
 	# mkdir -p /opt/SRVFSAGN.AG/{ENTRADA,SALIDA}
 	# mkdir -p /opt/CRC06AGN.AG/{ENTRADA,SALIDA}
 	# touch /opt/BNC2NTAGN.AG/SALIDA/BNC2NTAGN.to.SRVFSAGN

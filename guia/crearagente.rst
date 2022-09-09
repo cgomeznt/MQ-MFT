@@ -50,13 +50,15 @@ Comandos ejecutados y sus salidas
 
 	BFGCM0243I: A file has been created that contains the MQSC definitions for your coordination queue manager. The file can be found here: '/var/mqm/mqft/config/CRC01CRD/CRC01CRD.mqsc'.
 
+::
 
-$ fteSetupCommands -connectionQMgr CRC01CMM -connectionQMgrHost 192.168.1.110 -connectionQMgrPort 1416 -connectionQMgrChannel SYSTEM.DEF.SVRCONN
+	$ fteSetupCommands -connectionQMgr CRC01CMM -connectionQMgrHost 192.168.1.110 -connectionQMgrPort 1416 -connectionQMgrChannel SYSTEM.DEF.SVRCONN
 	5724-H72 Copyright IBM Corp.  2008, 2018.  ALL RIGHTS RESERVED
 	BFGCL0245I: The file '/var/mqm/mqft/config/CRC01CRD/command.properties' has been created successfully.
 
 
 
+::
 
 	$ fteCreateAgent -agentName CRC06AGN.AG -agentQMgr CRC06AGN.QM -agentQMgrHost 192.168.1.110 -agentQMgrPort 1424 -agentQMgrChannel SYSTEM.DEF.SVRCONN -agentDesc "Agent de Prueba para el Qmanager CRC06AGN.QM"
 	5724-H72 Copyright IBM Corp.  2008, 2018.  ALL RIGHTS RESERVED
@@ -214,12 +216,14 @@ $ fteSetupCommands -connectionQMgr CRC01CMM -connectionQMgrHost 192.168.1.110 -c
 	BFGCL0254I: Agent configured successfully. The agent has not been registered with the coordination queue manager.
 
 
+::
 
 	$ fteStartAgent CRC06AGN.AG
 	5724-H72 Copyright IBM Corp.  2008, 2018.  ALL RIGHTS RESERVED
 	BFGCL0030I: The request to start agent 'CRC06AGN.AG' on this machine has been submitted.
 	BFGCL0031I: Agent log files located at: /var/mqm/mqft/logs/CRC01CRD/agents/CRC06AGN.AG/logs
 
+::
 
 	$ fteStopAgent CRC06AGN.AG
 	5724-H72 Copyright IBM Corp.  2008, 2018.  ALL RIGHTS RESERVED
@@ -228,6 +232,7 @@ $ fteSetupCommands -connectionQMgr CRC01CMM -connectionQMgrHost 192.168.1.110 -c
 	BFGCL0553I: The agent has processed the stop request and will end when all current transfers have completed.
 
 
+::
 
 	$ fteDeleteAgent CRC06AGN.AG
 	5724-H72 Copyright IBM Corp.  2008, 2018.  ALL RIGHTS RESERVED
