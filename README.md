@@ -19,10 +19,14 @@ IBM WebSphere MQ Managed File Transfer
 * [Listar Scheduler](guia/listarscheduler.rst)
 * [Eliminar Scheduler](guia/eliminarscheduler.rst)
 * [Listar Templates](guia/listartemplate.rst)
-* [Listar Colas](guia/pingagent.rst)
+* [Listar Colas](guia/listarcolas.rst)
 * [Limpiar Colas](guia/limpiarcolas.rst)
+* [Estatus Canales](guia/estatuscolas.rst)
+* [Detener las Canales](guia/detenercolas.rst)
+* [Iniciar las Canales](guia/iniciarcolas.rst)
 * [Listar Transferencias](guia/pingagent.rst)
 * [Limpiar Transferencias](guia/pingagent.rst)
+* [Troubleshooting](guia/troubleshooting.rst)
 * [Monitorizar con Zabbix](guia/pingagent.rst)
 
 Se explica las distintas formas manuales, las mejores practicas es utilizar los scripts

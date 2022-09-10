@@ -1,71 +1,129 @@
 Limpiar Colas
 ==============
 
-Este es un script complejo que navega en cada una de las colas y la depura
+Se debe primero listar todas COLAS de un Qmanager, Por ejemplo el Qmanager del Coordinator "COORDINATOR=CRC01CRD" tiene todas estas colas::
+	
+	BNC2NTAGN
+	CRC01CMM
+	CRC01CRD.DQ
+	CRC06AGN
+	MERNTAGN
+	SRVFSAGN
+
+El "COMMANDER=CRC01CM" tiene todas estas colas::
+
+	BNC2NTAGN
+	CRC01CMM.DQ
+	CRC01CRD
+	CRC06AGN
+	MERNTAGN
+	SRVFSAGN
+
+El "SRVFS_CLIENT=SRVFSAGN" tiene todas estas colas::
+
+	BNC2NTAGN
+	CRC01CMM
+	CRC01CRD
+	CRC06AGN
+	MERNTAGN
+	SRVFSAGN.DQ
+
+Y por dar un ejemplo de un Qmanger que corresponde a un agente que no es el principal MERNTAGN::
+
+	CRC01CMM
+	CRC01CRD
+	MERNTAGN.DQ
+	SRVFSAGN
+
+Recordemos que tenemos en el ENV estas variables definidas en el .profile o .bashrh::
+
+	COORDINATOR=CRC01CRD
+	COMMANDER=CRC01CMM
+	SRVFS_CLIENT=SRVFSAGN
+
+Como listar todas los colas del COORDINATOR , COMMANDER y del SRVFS_CLIENT::
 
 
-	#!/bin/bash
-	FILE_AGENTSQMANAGER="/tmp/AgentesMQ/listasAgents.txt"
-	RUTA_TMP="/tmp/TranferMQ"
-	TMPQLOCAL_CRD="/tmp/QLOCALCRD"
-	TMPQLOCAL_CMM="/tmp/QLOCALCMM"
-	TMPQLOCAL_AS400="/tmp/QLOCALAS400"
-
-	function ListAgents {
-		> $FILE_AGENTSQMANAGER
-		for i in $(fteListAgents | awk '{print $1 "_" $2}' | tail -n +4) ; do echo $i ; done > $FILE_AGENTSQMANAGER
-	}
+	echo "DISPLAY QLOCAL ( * )" | runmqsc $COORDINATOR | egrep -v "AMQ8409|SYSTEM" | awk '{print $1}' | egrep -v "TYPE|5724-H72|Starting|AMQ.MQEXPLORER|One|No|All" | awk -F'(' '{print $2}' | tr -d ")" | sed '/^ *$/d'
 
 
-
-	function DetallesTransfAgents {
-		rm -f $RUTA_TMP/*
-		for i in $(cat $FILE_AGENTSQMANAGER) ; do fteShowAgentDetails -v $(echo $i | awk -F"_" '{print $1}') | awk '{print $1}' | sed 's/[a-z,A-Z]*//' | sed '/^$/d' | egrep -v ":|MFT" > $RUTA_TMP/$i; done
-	}
-
-	function CanceledTranfAgents {
-
-		for i in $(ls $RUTA_TMP/)
-		do
-			for j in $(cat $RUTA_TMP/$i)
-			do
-				NOMBREAGENTS=$(echo $i | awk -F"_" '{print $1}')
-				NOMBREQMANAGER=$(echo $i | awk -F"_" '{print $2}')
-				fteCancelTransfer -a $NOMBREAGENTS  -m $NOMBREQMANAGER $j
-			done
-		done
-	}
+	echo "DISPLAY QLOCAL ( * )" | runmqsc $COMMANDER | egrep -v "AMQ8409|SYSTEM" | awk '{print $1}' | egrep -v "TYPE|5724-H72|Starting|AMQ.MQEXPLORER|One|No|All" | awk -F'(' '{print $2}' | tr -d ")" | sed '/^ *$/d' 
 
 
-	function display_QLOCAL {
-		echo "DISPLAY QLOCAL ( * )" | runmqsc CRC01CRD | egrep -v "AMQ8409|SYSTEM" | awk '{print $1}' | egrep -v "TYPE|5724-H72|Starting|AMQ.MQEXPLORER|One|No|All" | awk -F'(' '{print $2}' | tr -d ")" | sed '/^ *$/d' > $TMPQLOCAL_CRD
-		sleep 2
-		echo "DISPLAY QLOCAL ( * )" | runmqsc CRC01CMM | egrep -v "AMQ8409|SYSTEM" | awk '{print $1}' | egrep -v "TYPE|5724-H72|Starting|AMQ.MQEXPLORER|One|No|All" | awk -F'(' '{print $2}' | tr -d ")" | sed '/^ *$/d' > $TMPQLOCAL_CMM
-		sleep 2
-		echo "DISPLAY QLOCAL ( * )" | runmqsc CRC03AGN | egrep -v "AMQ8409|SYSTEM" | awk '{print $1}' | egrep -v "TYPE|5724-H72|Starting|AMQ.MQEXPLORER|One|No|All" | awk -F'(' '{print $2}' | tr -d ")" | sed '/^ *$/d' > $TMPQLOCAL_AS400
-		sleep 2
-	}
-
-	function depurador_QLOCAL {
-		for i in $(cat  $TMPQLOCAL_CRD) ; do echo "CLEAR QLOCAL ( $i )" | runmqsc CRC01CRD && sleep 1;done
-			for i in $(cat  $TMPQLOCAL_CMM) ; do echo "CLEAR QLOCAL ( $i )" | runmqsc CRC01CMM && sleep 1;done
-				for i in $(cat  $TMPQLOCAL_AS400) ; do echo "CLEAR QLOCAL ( $i )" | runmqsc CRC03AGN && sleep 1;done
-	}	
+	echo "DISPLAY QLOCAL ( * )" | runmqsc $SRVFS_CLIENT | egrep -v "AMQ8409|SYSTEM" | awk '{print $1}' | egrep -v "TYPE|5724-H72|Starting|AMQ.MQEXPLORER|One|No|All" | awk -F'(' '{print $2}' | tr -d ")" | sed '/^ *$/d' 
 
 
-	>cat  limpieza-transfer.sh 
-	#!/bin/bash
+Ahora que ya tenemos las COLAS podemos hacer un CLEAR QLOCAL en cada una de ellas, el $i debemos ir colocando todas las colas que listamos::
 
-	PATH=/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/mqm/bin:/var/mqm/bin
+	echo "CLEAR QLOCAL ( $i )" | runmqsc $COORDINATOR
+	echo "CLEAR QLOCAL ( $i )" | runmqsc $COMMANDER
+	echo "CLEAR QLOCAL ( $i )" | runmqsc $SRVFS_CLIENT
 
-	source /usr/local/bin/tools/funciones
+Solo vamos hacer la del $COORDINATOR para dar un ejemplo y no cargar visualmente el documento y ver su salida::
+
+	$ echo "CLEAR QLOCAL ( BNC2NTAGN )" | runmqsc $COORDINATOR
+	5724-H72 (C) Copyright IBM Corp. 1994, 2018.
+	Starting MQSC for queue manager CRC01CRD.
+
+
+	     1 : CLEAR QLOCAL ( BNC2NTAGN )
+	AMQ8022I: IBM MQ queue cleared.
+	One MQSC command read.
+	No commands have a syntax error.
+	All valid MQSC commands were processed.
+	[mqm@mq-server tools]$ echo "CLEAR QLOCAL ( CRC01CMM )" | runmqsc $COORDINATOR
+	5724-H72 (C) Copyright IBM Corp. 1994, 2018.
+	Starting MQSC for queue manager CRC01CRD.
+
+
+	     1 : CLEAR QLOCAL ( CRC01CMM )
+	AMQ8148E: IBM MQ object in use.
+	One MQSC command read.
+	No commands have a syntax error.
+	One valid MQSC command could not be processed.
+	[mqm@mq-server tools]$ echo "CLEAR QLOCAL ( CRC01CRD.DQ )" | runmqsc $COORDINATOR
+	5724-H72 (C) Copyright IBM Corp. 1994, 2018.
+	Starting MQSC for queue manager CRC01CRD.
+
+
+	     1 : CLEAR QLOCAL ( CRC01CRD.DQ )
+	AMQ8022I: IBM MQ queue cleared.
+	One MQSC command read.
+	No commands have a syntax error.
+	All valid MQSC commands were processed.
+	[mqm@mq-server tools]$ echo "CLEAR QLOCAL ( SRVFSAGN )" | runmqsc $COORDINATOR
+	5724-H72 (C) Copyright IBM Corp. 1994, 2018.
+	Starting MQSC for queue manager CRC01CRD.
+
+
+	     1 : CLEAR QLOCAL ( SRVFSAGN )
+	AMQ8148E: IBM MQ object in use.
+	One MQSC command read.
+	No commands have a syntax error.
+	One valid MQSC command could not be processed.
+
+
+
+
+Como lo hacemos automatico::
+
+
+	COLAS_COORDINATOR=$(echo "DISPLAY QLOCAL ( * )" | runmqsc $COORDINATOR | egrep -v "AMQ8409|SYSTEM" | awk '{print $1}' | egrep -v "TYPE|5724-H72|Starting|AMQ.MQEXPLORER|One|No|All" | awk -F'(' '{print $2}' | tr -d ")" | sed '/^ *$/d')
+
+
+	COLAS_COMMANDER=$(echo "DISPLAY QLOCAL ( * )" | runmqsc $COMMANDER | egrep -v "AMQ8409|SYSTEM" | awk '{print $1}' | egrep -v "TYPE|5724-H72|Starting|AMQ.MQEXPLORER|One|No|All" | awk -F'(' '{print $2}' | tr -d ")" | sed '/^ *$/d')
+
+
+	COLAS_SRVFS_CLIENT=$(echo "DISPLAY QLOCAL ( * )" | runmqsc $SRVFS_CLIENT | egrep -v "AMQ8409|SYSTEM" | awk '{print $1}' | egrep -v "TYPE|5724-H72|Starting|AMQ.MQEXPLORER|One|No|All" | awk -F'(' '{print $2}' | tr -d ")" | sed '/^ *$/d')
+
+
+	for i in $(echo  $COLAS_COORDINATOR) ; do echo "CLEAR QLOCAL ( $i )" | runmqsc $COORDINATOR && sleep 1;done
+	for i in $(echo  $COLAS_COMMANDER) ; do echo "CLEAR QLOCAL ( $i )" | runmqsc $COMMANDER && sleep 1;done
+	for i in $(echo  $COLAS_SRVFS_CLIENT) ; do echo "CLEAR QLOCAL ( $i )" | runmqsc $SRVFS_CLIENT && sleep 1;done
+
 
 	display_QLOCAL
 	depurador_QLOCAL
-	ListAgents
-	DetallesTransfAgents
-	#CanceledTranfAgents &> /dev/null	
-	CanceledTranfAgents	
-	exit 0
+
 
 
