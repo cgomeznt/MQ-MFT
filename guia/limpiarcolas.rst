@@ -118,12 +118,14 @@ Como lo hacemos automatico::
 
 
 	for i in $(echo  $COLAS_COORDINATOR) ; do echo "CLEAR QLOCAL ( $i )" | runmqsc $COORDINATOR && sleep 1;done
+
+
 	for i in $(echo  $COLAS_COMMANDER) ; do echo "CLEAR QLOCAL ( $i )" | runmqsc $COMMANDER && sleep 1;done
+
+
 	for i in $(echo  $COLAS_SRVFS_CLIENT) ; do echo "CLEAR QLOCAL ( $i )" | runmqsc $SRVFS_CLIENT && sleep 1;done
 
 
-	display_QLOCAL
-	depurador_QLOCAL
 
 
 
