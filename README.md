@@ -25,8 +25,7 @@ IBM WebSphere MQ Managed File Transfer
 * [Estatus de los  Canales](guia/estatuscanales.rst)
 * [Detener las Canales](guia/detenercanales.rst)
 * [Iniciar las Canales](guia/iniciarcanales.rst)
-* [Listar Transferencias](guia/pingagent.rst)
-* [Limpiar Transferencias](guia/pingagent.rst)
+* [Listar y Limpiar las Transferencias Acumuladas](guia/listdeletetransfer.rst)
 * [Troubleshooting](guia/troubleshooting.rst)
 * [Monitorizar con Zabbix](guia/pingagent.rst)
 
