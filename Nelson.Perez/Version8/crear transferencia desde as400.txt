@@ -1,0 +1,60 @@
+crear nueva transferencia desde As400
+
+11000 - QSH CMD('QIBM/PRODDATA/WMQFTE/V7/BIN/FTECREATETRANSFER -sa
+ CRC03AGN1.AG -sm CRC03AGN.QM -da SSL01AGN.AG -dm SSL01AGN -df    
+ E:/pruebasTransferencia/Entrada/LQPFT110.TXT -de overwrite       
+ /885/COMERCIO/SALIDA/LQPFT110')
+
+ftecreatetransfer -sa SSL01AGN.AG -sm SSL01AGN -da SSL01AGN.AG -dm SSL01AGN -df  E:\Prueba.txt E:\pruebasTransferencia\Prueba.txt
+
+E:/pruebasTransferencia/Salida/Credicard.txt 
+
+ E:/pruebasTransferencia/Salida/Credicard.txt -dd overwrite E:/pruebasTransferencia/Entrada/
+
+ftecreatetransfer -sa SSL01AGN.AG -sm SSL01AGN -da SSL01AGN.AG -dm SSL01AGN -df overwrite E:\pruebasTransferencia\Entrada  -de E:\pruebasTransferencia\Salida\Credicard.txt 
+
+Crear Nueva transferencia en Windows
+
+para sobrescibir un archivo existente
+
+ftecreatetransfer -sa SSL01AGN.AG -sm SSL01AGN -da SSL01AGN.AG -dm SSL01AGN -df E:\prueba.txt -de overwrite E:\pruebasTransferencia\Salida\Credicard.txt
+
+
+sin sobescribir
+
+ftecreatetransfer -sa SSL01AGN.AG -sm SSL01AGN -da SSL01AGN.AG -dm SSL01AGN -w -df E:\Prueba.txt E:\pruebasTransferencia\Prueba.txt
+
+Para transferir todos los archivos existentes a otro directorio
+
+ftecreatetransfer -sa SSL01AGN.AG -sm SSL01AGN -da SSL01AGN.AG -dm SSL01AGN -w -dd E:\PruebasTransferencia\ -de overwrite E:\pruebasTransferencia\Salida\*
+
+
+runmqsc BIV01AGN < BIV01AGN.AG_create.mqsc
+
+
+DC 9000
+
+
+ftecreatetransfer -sa CRC11AGN.AG -sm CRC11AGN -da CRC03AGN1.AG -dm CRC03AGN -df E:\Prueba.txt E:\pruebasTransferencia\Prueba.txt
+
+ftecreatetransfer -sa SSL01AGN.AG -sm SSL01AGN -da CRC03AGN1.AG -dm CRC03AGN.QM -df /auditori/Prueba.txt -de overwrite E:\pruebasTransferencia\Prueba.txt
+
+crear transferencia y eliminar archivos despúes de finalización
+
+Para transferir todos los archivos
+
+ftecreatetransfer -sa SSL01AGN.AG -sm SSL01AGN -da SSL01AGN.AG -dm SSL01AGN -sd delete -w -dd E:\  -de overwrite E:\pruebasTransferencia\salida\*
+
+transferir un archivo específico
+
+ftecreatetransfer -sa SSL01AGN.AG -sm SSL01AGN -da SSL01AGN.AG -dm SSL01AGN -sd delete -w -df E:\Prueba.txt  -de overwrite E:\pruebasTransferencia\salida\Prueba.txt
+
+ftecreatetransfer -sa CRC03AGN1.AG -sm CRC03AGN.QM -da CRC03AGN1.AG -dm CRC03AGN.QM -s delete -w  /tmp/Prueba.txt /Prueba.txt
+
+
+
+
+ftecreatetransfer -sa TEST2 -sm TEST2 -da TEST2 -dm TEST2 -w -dd C:\Users\nelson.perez\Aplicaciones\MQ C:\Users\nelson.perez\Aplicaciones\prueba4.txt
+
+
+

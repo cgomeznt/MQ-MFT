@@ -1,0 +1,38 @@
+=================Paso Inicial=====================
+                              
+============================================================================
+runmqsc CRC12AGN                                    
+
+DEFINE LISTENER (CRC12AGN.LST) TRPTYPE (TCP) CONTROL (QMGR)    
+ALTER LISTENER (CRC12AGN.LST) TRPTYPE (TCP) PORT (1452)       
+START LISTENER (CRC12AGN.LST)
+--------------------------------------------------
+DEFINE CHANNEL (CRC12AGN.A.CRC01CRD) CHLTYPE (SDR) CONNAME ('srv-vccs-mqfteprd(1414)') XMITQ (CRC01CRD)
+DEFINE CHANNEL (CRC01CRD.A.CRC12AGN) CHLTYPE (RCVR)
+DEFINE QLOCAL (CRC01CRD) USAGE (XMITQ)
+
+DEFINE CHANNEL (CRC12AGN.A.CRC01CMM) CHLTYPE (SDR) CONNAME ('srv-vccs-mqfteprd(1416)') XMITQ (CRC01CMM)
+DEFINE CHANNEL (CRC01CMM.A.CRC12AGN) CHLTYPE (RCVR)
+DEFINE QLOCAL (CRC01CMM) USAGE (XMITQ)
+
+DEFINE CHANNEL (CRC12AGN.A.CRC03AGN) CHLTYPE (SDR) CONNAME ('srv-vccs-mqfteprd(1418)') XMITQ (CRC03AGN)
+DEFINE CHANNEL (CRC03AGN.A.CRC12AGN) CHLTYPE (RCVR)
+DEFINE QLOCAL (CRC03AGN) USAGE (XMITQ)
+
+START  CHANNEL (CRC12AGN.A.CRC01CRD)
+START  CHANNEL (CRC12AGN.A.CRC01CMM)
+START  CHANNEL (CRC12AGN.A.CRC03AGN)
+==================Configuración Cordinator====================================
+DEFINE CHANNEL (CRC01CRD.A.CRC12AGN) CHLTYPE (SDR) CONNAME ('srv-vccs-mqfteprd(1452)') XMITQ (CRC12AGN)
+DEFINE QLOCAL (CRC12AGN) USAGE (XMITQ)
+DEFINE CHANNEL (CRC12AGN.A.CRC01CRD) CHLTYPE (RCVR)
+
+==================COnfiguración Commander=====================================
+run
+==================Configuración Agente AS400====================================
+DEFINE CHANNEL (CRC03AGN.A.CRC12AGN) CHLTYPE (SDR) CONNAME ('srv-vccs-mqfteprd(1452)') XMITQ (CRC12AGN)
+DEFINE QLOCAL (CRC12AGN) USAGE (XMITQ)
+DEFINE CHANNEL (CRC12AGN.A.CRC03AGN) CHLTYPE (RCVR)
+
+
+

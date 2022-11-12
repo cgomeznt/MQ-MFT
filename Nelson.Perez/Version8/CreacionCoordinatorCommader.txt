@@ -1,0 +1,61 @@
+ =================Paso Inicial=====================
+crtmqm -c "coordinacion" -u CRC01CRD.QM.DQ -q CRC01CRD.QM  
+strmqm  CRC01CRD.QM 
+runmqsc CRC01CRD.QM                                 
+============================================================================                                        
+DEFINE LISTENER (CRC01CRD.QM.LST) TRPTYPE (TCP) CONTROL (QMGR)    
+ALTER LISTENER (CRC01CRD.QM.LST) TRPTYPE (TCP) PORT (1414)       
+START LISTENER (CRC01CRD.QM.LST)
+DEFINE CHANNEL (SYSTEM.ADMIN.SVRCONN) CHLTYPE (SVRCONN)
+START CHANNEL (SYSTEM.ADMIN.SVRCONN)
+DEFINE QLOCAL (CRC01CRD.QM.DQ) USAGE (NORMAL)
+
+=============
+Creamos el coordinator 
+
+/var/mqm/WMQFTE/bin/fteSetupCoordination -coordinationQMgr CRC01CRD.QM -coordinationQMgrHost SRV_DESA_MQ -coordinationQMgrPort 1414 -coordinationQMgrChannel SYSTEM.ADMIN.SVRCONN
+Resultado:
+BFGCL0068I: A file has been created that contains the MQSC definitions for your coordination queue manager. The file can be found here: '/var/IBM/WMQFTE/config/CRC01CRD.QM/CRC01CRD.QM.mqsc'.
+
+====================
+Pasamos los comandos generados en el archivo a manejador de colas que sera el coordinator:
+
+runmqsc CRC01CRD.QM  < /var/IBM/WMQFTE/config/CRC01CRD.QM/CRC01CRD.QM.mqsc
+
+Resultado:
+AMQ8006: WebSphere MQ queue created.
+10 MQSC commands read.
+No commands have a syntax error.
+All valid MQSC commands were processed.
+
+
+
+
+
+##-Creamos el QManager que sera el commander.
+
+=================Paso Inicial=====================
+crtmqm -c "Commander" -u CRC01CMM.QM CRC01CMM.QM  
+strmqm  CRC01CMM.QM 
+runmqsc CRC01CMM.QM                                 
+============================================================================                                        
+DEFINE LISTENER (CRC01CMM.QM.LST) TRPTYPE (TCP) CONTROL (QMGR)    
+ALTER LISTENER (CRC01CMM.QM.LST) TRPTYPE (TCP) PORT (1416)       
+START LISTENER (CRC01CMM.QM.LST)
+DEFINE CHANNEL (SYSTEM.ADMIN.SVRCONN) CHLTYPE (SVRCONN)
+START CHANNEL (SYSTEM.ADMIN.SVRCONN)
+DEFINE QLOCAL (CRC01CMM.QM.DQ) USAGE (NORMAL)
+
+
+========================
+Creamos el commander:
+
+/var/mqm/WMQFTE/bin/fteSetupCommands -connectionQMgr CRC01CMM.QM -connectionQMgrHost SRV_DESA_MQ -connectionQMgrPort 1416 -connectionQMgrChannel SYSTEM.ADMIN.SVRCONN
+
+Resultado:
+5655-U80, 5724-R10 Copyright IBM Corp.  2008, 2011.  ALL RIGHTS RESERVED
+BFGCL0245I: The file '/var/IBM/WMQFTE/config/CRC01CRD.QM/command.properties' has been created successfully.
+
+
+
+

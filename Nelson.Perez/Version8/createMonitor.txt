@@ -1,0 +1,246 @@
+With the task defined, you can now create the resource monitor. In this example, define the new monitor SimpleResourceMonitor on the source agent SOURCEAGENT, monitoring the directory C:\monitored for the existence or update of the file trigger1.go:
+Listing 2. Creating a simple resource monitor
+
+fteCreateMonitor -ma TEST2 -mn ResourceMonitor_TEST2 -jn MonitorJob_TEST2 -md C:\Users\nelson.perez -mt C:\Users\nelson.perez\Aplicaciones\IBM\test2.task -tr match,test.txt
+
+Elminar Monitor:
+fteDeleteMonitor.cmd -ma TEST2 -mn RESOURCEMONITOR_TEST2
+
+
+[mqm@srv-vccs-mqftdev]:/root>fteCreateMonitor -h
+5655-MFT, 5724-H72 Copyright IBM Corp.  2008, 2014.  ALL RIGHTS RESERVED
+Creates a WebSphere MQ Managed File Transfer resource monitor
+
+Syntax:
+    fteCreateMonitor  [-p <configurationOptions>]
+                       -ma <agentName> [-mm <agentQueueManager>]
+                      (-md <directory> | -mq <queue>)
+                       -mn <monitorName>
+                       -mt <taskFileName>
+                      [-pi <pollInterval>]
+                      [-pt wildcard|regex]
+                      [-pu <pollUnits>]
+                      [-rl <recursionevel>]
+                      [-bs <maximumBatchSize>]
+                      [-tr <triggerCondition>]
+                      [-tc] [-tcr <pattern>] [-tcc srcDest|destSrc]
+                      [-x  <excludePattern>]
+                      [-jn <jobName>]
+                      [-mmd <monitor metaData>]
+                      [-dv <substitutionVariableDefaultValues>]
+                      [-ix <filename>] [-ox <filename>]
+                      [-mquserid <user>] [-mqpassword <password>]
+                      [-f] [-c]
+
+where:
+    -p <configurationOptions>
+        Determines the set of configuration options that is used to
+        create a monitor request. If you do not specify the -p parameter,
+        the default set of configuration options is used.
+
+Agent Specification:
+    -ma <agentName>
+        Required. The name of the agent to perform the monitoring task.
+
+    -mm <agentQueueManager>
+        Optional. The name of the queue manager the agent is connected to.
+
+Resource Specification:
+  Exactly one of the following must be specified:
+    -md
+        Required. A directory path name to monitor.
+
+    -mq
+        Required. A queue name to monitor.
+
+Monitor Specification:
+    -mn <monitorName>
+        Required. The name of this monitor. The characters '*', '%', and '?'
+        are not allowed in monitor names.
+
+    -mt <taskFileName>
+        Required. The file name containing the XML task definition to be
+        performed. Refer to the fteCreateTransfer command -gt parameter for
+        details on how to create the XML task definition.
+
+    -pi <pollInterval>
+        Optional. The interval period between each poll of the monitored
+        resource. Default is 1. The units for this value are specified
+        using the -pu parameter.
+
+    -pu <pollUnits>
+        Optional. The units of poll interval period. Values are seconds,
+        minutes, hours or days. Default is minutes.
+
+    -rl <recursionevel>
+        Optional. For a directory monitor, the number of levels of recursion
+        the monitor should descend into the resource directory.
+        Default is none.
+
+    -bs <maximumBatchSize>
+        Optional. The maximum number of trigger cases to perform in a single
+        task. For example, if a value of 5 is specified and 9 trigger cases
+        occur for a poll, then 2 tasks will be performed. The first task will
+        correspond to triggers 1 to 5 and the second task will correspond to
+        triggers 6 to 9. Default is 1.
+
+    -tr <triggerCondition>
+        Optional. The condition to define a trigger case for performing the
+        task action.
+
+        The format of the trigger condition for a directory monitor is:
+            <condition>,<pattern>
+            where <condition> can be one of the following values:
+              match:
+                  any file that matches the pattern.
+              noMatch:
+                  no file matches the pattern.
+              noSizeChange=nn:
+                  any file that matches the pattern and has a file size
+                  that does not change for nn polling intervals, where
+                  nn is a positive integer.
+              fileSize>=nnUU:
+                  any file that matches the pattern and has a file size
+                  greater or equal to nnUU. Where nn is a positive integer
+                  and UU is an optional unit of B, KB, MB, or GB.
+                  The default unit is B (bytes).
+              The default condition for a directory monitor is match.
+            and <pattern> is a file name which can include an asterisk as a
+            wildcard that matches zero or more characters. The default pattern
+            is to match any file.
+
+        The format of the trigger condition for a queue monitor is:
+            <condition>
+            where <condition> can be one of the following values:
+              queueNotEmpty : the queue contains at least one message.
+              completeGroups: the queue contains at least one complete group.
+              The default condition for a queue monitor is queueNotEmpty.
+
+    -pt wildcard|regex
+        Optional. The type of the pattern used by the -x and -tr parameters.
+        Valid values are:
+            wildcard:
+              the patterns are wildcard patterns, where an asterisk (*) matches
+              zero or more characters and a question mark (?) matches exactly
+              one character.
+            regex:
+              the patterns are regular expressions.
+
+    -x <excludePattern>
+        Optional. A pattern that specifies file names to exclude from the
+        trigger. The trigger is specified by the -tr parameter. Default is
+        to not exclude any files.
+
+    -tc
+        Optional. Indicates that the triggered file contains one or more
+        file paths to generate a transfer request. The default format for the file's
+        contents is one file entry on each line with the format either as <source
+        file path> or <source file path>,<destination file path>. This option is
+        available only for directory monitor triggers "match" and "noSizeChange".
+
+    -tcr <pattern>
+        Optional. Specifies a replacement regular expression for parsing trigger files.
+        The pattern must be designed to parse each line entry completely with one or
+        two capture groups. Group one defines the source file path and the optional
+        group two defines the destination file path. This is the default behavior and can
+        be changed using the -tcc parameter
+        Note that you must also specify the -tc parameter.
+
+    -tcc <srcDest|destSrc>
+        Optional. Defines the regular expression capture group order. "srcDest" is the default,
+        where group one is the source file path and group two is the destination file path.
+        "destSrc" is the reverse: group one is the destination and group two is the source.
+        Note that you must specify the -tcr parameter and the regular expression for "destSrc"
+        that must have two capture groups.
+
+    -jn <jobName>
+        Optional. Job name reference. A user-defined identifier for the
+        request.
+
+   -mmd <monitor metaData>
+        Optional. Specifies the user-defined metadata that is passed to the
+        monitor's exit points. The parameter can take one or more name
+        pairs separated by commas. Each name pair consists of a
+        <name>=<value>. The -mmd parameter can occur more than once in a
+        command.
+
+    -dv <substitutionVariableDefaultValues>
+        Optional. Parameter for the default values of substitution variables.
+        If a value of a substitution variable is not specified as an RFH2
+        property on the first message to be transferred, the default value
+        will be used as the  substituted value in the task XML. The parameter
+        can take one or more name pairs separated by commas. Each name pair
+        consists of <substitution variable name>=<default value>. The -dv
+        parameter is only applicable when monitoring a queue, so the -mq
+        parameter must also be specified.
+    -ix <filename>
+        Optional. Define using an existing monitor XML file as a template in
+        this monitor creation. The monitor XML file will be used to define the
+        original parameter with any other parameter given in the command
+        overriding their values.
+
+    -ox <filename>
+        Optional. Defines a filename to store the generated monitor XML. If
+        this parameter is specified then the generated request will not be
+        sent to the named agent, but written to the given filename. The
+        default is to transfer to named agent.
+
+    Security:
+
+    -mquserid <user id>
+        Optional. Specifies the user ID to authenticate with the command queue
+        manager.
+
+   -mqpassword <password>
+        Optional. Specifies the password to authenticate with the command queue
+        manager. You must also specify the -mquserid parameter.
+        If you specify -mquserid but do not also specify -mqpassword, you
+        will be asked to supply the associated password by a prompt. The password
+        will not be displayed on the screen.
+
+    -f
+        Optional. Use this to overwrite a resource monitor configuration.
+        For example when the resource monitor name you have chosen already
+        exists on the resource monitoring agent and you want to update it
+        rather than delete and re-create with the same name.
+
+    -c
+        Optional. This option can only be used with the -f parameter. This
+        will clear the history of an updated resource monitor which will cause
+        it to check the trigger conditions again.
+
+    NB: Resource monitors are not supported by protocol bridge agents.
+
+EXAMPLES
+
+   fteCreateMonitor -mn MONITOR1 -ma AGENT1 -md /usr/monitor
+                                                      -mt /usr/xml/task.xml
+       Creates a monitor called MONITOR1 on AGENT1 that will generate a
+       transfer request based on /usr/xml/task.xml for each file present in
+       the /usr/monitor directory.
+
+   fteCreateMonitor -mn MONITOR1 -ma AGENT1 -md /usr/monitor
+                                  -mt /usr/xml/task.xml -tr "match,*.go" -rl
+       Creates a monitor called MONITOR1 on AGENT1 that will generate a
+       transfer request based on /usr/xml/task.xml for each file present with
+       an extension of .go in the /usr/monitor directory and directories below
+       it.
+
+   fteCreateMonitor -mn MONITOR1 -ma AGENT1 -md /usr/monitor
+                            -mt /usr/xml/task.xml -tr "fileSize>=100MB,*.log"
+       Creates a monitor called MONITOR1 on AGENT1 that will generate a
+       transfer request based on /usr/xml/task.xml for each file with an
+       extension of .log and a file size greater than 100 MB in the
+       /usr/monitor directory.
+
+   fteCreateMonitor -mn TRIGWITHCONTAINS -ma AGENT1 -md /usr/monitor/triggerContents
+                            -mt /usr/xml/task.xml -tr "match,*.usecontents"
+                            -tc -tcr "(.*),(.*)" -tcc destSrc
+       Create a monitor called TRIGWITHCONTAINS on AGENT1 that will generate a
+       transfer request based on /usr/xml/task.xml with the contents of the trigger
+       file matching the pattern "*.usecontents". The format of the trigger file must be
+       <destinationFilePath>,<sourceFilePath>
+
+	   
+	   
+	   

@@ -1,0 +1,8 @@
+fteSetupCoordination -coordinationQMgr CRC01CRD -coordinationQMgrHost 10.134.0.133 -coordinationQMgrPort 1414 -coordinationQMgrChannel SYSTEM.ADMIN.SVRCONN
+fteSetupCommands -connectionQMgr CRC01CMM -connectionQMgrHost 10.134.0.133 -connectionQMgrPort 1416 -connectionQMgrChannel SYSTEM.ADMIN.SVRCONN
+fteCreateAgent -agentName TEST2  -agentQMgr TEST2 -agentQMgrHost 10.134.0.133 -agentQMgrPort 1498 -agentDesc "Agente de prueba" 
+
+Reiniciar los qmanager.-
+
+fteCreateTransfer -sa TEST2 -da TEST2  -sd delete -df C:\Users\nelson.perez\Aplicaciones\TEST1.txt -de overwrite C:\Users\nelson.perez\TEST.txt
+
