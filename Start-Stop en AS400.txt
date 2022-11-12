@@ -1,0 +1,7 @@
+DESDE EL QSHELL:
+INICIAR:      /qibm/proddata/WMQFTE/v7/bin/fteStartAgent  BAV01AGN.AG  
+DETENER:    /qibm/proddata/WMQFTE/v7/bin/fteStopAgent  BAV01AGN.AG 
+
+ DESDE EL CL:
+IINICIAR:       qsh cmd('qibm/proddata/wmqfte/v7/bin/ fteStartAgent  BAV01AGN.AG ') 
+DETENER:    qsh cmd('qibm/proddata/wmqfte/v7/bin/ fteStopAgent  BAV01AGN.AG ')

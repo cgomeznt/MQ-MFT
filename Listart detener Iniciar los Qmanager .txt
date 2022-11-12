@@ -1,0 +1,52 @@
+sudo su - mqm
+
+Para consultar los Qmanager
+
+[mqm@srv-vccs-mqfteprd]:/var/mqm>dspmq
+QMNAME(CRC01CRD)                                          STATUS(Running)
+QMNAME(CRC01CMM)                                          STATUS(Running)
+QMNAME(CRC03AGN)                                          STATUS(Running)
+QMNAME(BDV01AGN)                                          STATUS(Running)
+QMNAME(BOD01AGN)                                          STATUS(Running)
+QMNAME(BCRB01AGN)                                         STATUS(Running)
+QMNAME(BBIC01AGN)                                         STATUS(Running)
+QMNAME(BPLS01AGN)                                         STATUS(Running)
+QMNAME(BFC01AGN)                                          STATUS(Running)
+QMNAME(BCRN01AGN)                                         STATUS(Running)
+QMNAME(BPLZ01AGN)                                         STATUS(Running)
+QMNAME(BTES01AGN)                                         STATUS(Running)
+QMNAME(CRC11AGN)                                          STATUS(Running)
+QMNAME(VLVN01AGN)                                         STATUS(Running)
+QMNAME(B100AGN01)                                         STATUS(Running)
+QMNAME(BOD02AGN)                                          STATUS(Running)
+QMNAME(BAV01AGN)                                          STATUS(Running)
+QMNAME(CRC12AGN)                                          STATUS(Running)
+QMNAME(CRC10AGN)                                          STATUS(Running)
+QMNAME(BEXT01AGN)                                         STATUS(Running)
+QMNAME(BMBC01AGN)                                         STATUS(Running)
+QMNAME(CRC14AGN)                                          STATUS(Running)
+QMNAME(CTK01AGN)                                          STATUS(Running)
+QMNAME(CRC15AGN)                                          STATUS(Running)
+
+Nos cambiamos a la ruta en donde están todos los script administrativos
+
+[mqm@srv-vccs-mqfteprd]:/var/mqm>cd /usr/local/bin/
+[mqm@srv-vccs-mqfteprd]:/usr/local/bin>
+
+
+Para detener un Qmanager es:
+
+[mqm@srv-vccs-mqfteprd]:/usr/local/bin>./stop-qmanager.sh CRC15AGN
+
+Para Iniciar un Qmanager es:
+
+[mqm@srv-vccs-mqfteprd]:/usr/local/bin>./start-qmanager.sh CRC15AGN
+
+
+Esto es lo que utilice para detenerlos todos
+
+[mqm@srv-vccs-mqfteprd]:/usr/local/bin>for i in `dspmq | awk '{print $1}' | awk -F"(" '{print $2}' | tr -d ")"` ; do ./stop-qmanager.sh $i ; done
+
+Esto es lo que utilice para Iniciarlos todos
+
+[mqm@srv-vccs-mqfteprd]:/usr/local/bin>for i in `dspmq | awk '{print $1}' | awk -F"(" '{print $2}' | tr -d ")"` ; do ./start-qmanager.sh $i ; done

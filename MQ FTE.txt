@@ -1,0 +1,219 @@
+??Ruben D. Sojo?? [10:32 a.m.]:
+  \\credicard.com.ve\archivos\VPINFRA\Aplicaciones y BD
+??Ruben D. Sojo?? [11:29 a.m.]:
+  http://www-01.ibm.com/support/docview.wss?uid=swg27023658&aid=1
+  _http://www.ibm.com/support/knowledgecenter/SSFKSJ_7.0.1/com.ibm.mq.amqzag.doc/fa15650_.htm
+??Ruben D. Sojo?? [11:42 a.m.]:
+  _http://www.ibm.com/support/knowledgecenter/SSFKSJ_7.5.0/com.ibm.mq.ref.adm.doc/q083050_.htm
+
+Ver en /usr/local/bin los script para manipulacion
+
+[mqm@srv-vccs-mqftdev]:/var/mqm>dspmq ?
+Usage: dspmq [-m QMgrName] [-o status | -s] [-o default]
+             [-o standby] [-o installation] [-x] [-n] [-a]
+
+ -a   Display information about the active queue managers only. &M  -m   Queue
+manager name.
+ -n   Suppress translation of output strings.
+ -o all
+      Display all status information for the queue managers.
+ -o status
+      Display the operational status of the queue managers.
+ -o default
+      Display whether any of the queue managers are the default.
+ -o standby
+      Display whether a queue manager currently permits a standby instance.
+ -o installation
+      Display the installation details of the queue managers.
+ -s   Display the operational status of the queue managers.
+ -x   Display information about instances of queue manager
+
+
+??????????????????????????????????????? EJEMPLO DE UNA SOLICITUS ????????????????????????????????????????????????????????
+El presente es para solicitar la instalación de la herramienta MQFTE en los siguientes servidores:
+
+10.134.0.177	255.255.255.0	w08-cal-app-rev7-cppd-01
+
+10.124.0.59	255.255.255.0	w08-prd-app-rev7-cppd-01
+
+Dicha requisición viene enmarcada en la adecuación del Proyecto RVE7, anexo la solicitud enviada por el área de Arquitectura.
+
+--------------------------------------------------------------------------------------------------------------------------
+Debes perdir los permisos en seguridad
+A fin de dar continuidad a las actividades de configuración del servicio de intercambio de archivos con la franquicia se requiere la habilitación de los siguientes acceso:
+
+Origen	Destino	Puertos
+Grupo Soporte Aplicaciones	10.134.0.177	3389
+Grupo Soporte Aplicaciones	10.124.0.59	3389
+10.134.0.177 (RVE7 Desarrollo)	10.136.0.106 (MQ FTE Dev)	1414, 1416 y 1454
+10.124.0.59 (RVE7 Producción)	10.136.0.109 (MQ FTE Prod)	1414, 1416 y 1454
+
+------------------------------------------------------------------------------------------------------------------------------
+
+conectar con el servidor de MQ
+
+hacer sesion con 
+su - mqm
+
+dspmq
+dspmq -all
+
+cd /usr/local/bin/
+
+como ya habia creado lo voy a borrar para hacer el ejercicio
+:/usr/local/bin>./delete-qmanager-agent.sh CRC14AGN
+
+me fallo y lo que hice lei el script y ejecute el comando directo de eliminacion
+:/usr/local/bin>dltmqm CRC14AGN
+
+Si quiero desregistrar el agente es 
+
+fteDeleteAgent -f CRC04AGN.AG
+5655-MFT, 5724-H72 Copyright IBM Corp.  2008, 2014.  ALL RIGHTS RESERVED
+BFGPR0127W: No credentials file has been specified to connect to WebSphere MQ. Therefore, the assumption is that WebSphere MQ authentication has been disabled.
+BFGCL0282I: A request to deregister the agent was sent to the coordination queue manager. You can also delete the agent's queues.
+
+
+Ahora vamos a crearlo nuevamente, en /usr/local/bin debo colocar la configuracion de, estos datos los tomo del correo,
+el nombre del agente debo buscar un correlativo con los que ya exiten (dspmq)y el puerto tambien (dspmq -all).
+Nombre del Agente:Descripcion:puerto
+
+>vi agents.lst
+CRC14AGN:REV7_MASTERCARD:1454:CRC14AGN.AG
+
+Ahora ejecutamos el script
+>./create-agents.sh
+
+Listo ahora con dspmq debo verlo. 
+NOTA: si no lo ejecutara con el script debo tener una plantilla de dos archivos con extension .MQSC (create y delete) ejemplo
+runmqsc CRC14AGN < CRC14AGN.AG_delete.mqsc
+runmqsc CRC14AGN < CRC14AGN.AG_create.mqsc
+
+Tengo que ir a la herramieta de IBM MQ y realizar la nueva conexion
+En gestor de Colas boton derecho añadir gestor de colas remotas 
+en nombre de la cola es el nombre del agente CRC14AGN y con la opcion de establecer conexion directamente
+nombre del host o IP, le coloco la ip del servidor de MQ sea prod, Qa o Dev 10.136.0.106
+Numero de puerto, colocamos el puerto ya antes asignado 1454
+Canal de conexion de l servidor SYSTEM.ADMIN.SVRCONN
+finalizar
+
+SYSTEM.DEF.SVRCONN
+
+Ahora en el IBM MQ en Gestor de Colas si no existe creo un grupo de DEV y desde el grupo/conjunto todo lo copio ahi.
+despliego el Qmanager CRC14AGN creado y vamos a  Canales.
+Ahi veremos que se crea un canal para COMMANDER, CONTROLER Y contra el AS400 de los tipos emisor y receptor.
+debo iniciar primero los emisores (emite la señal para que el receptor pueda iniciar)
+
+Nombre de canal	Tipo de canal	Estado global del canal	Nombre de conexión	Cola de transmisión	ID de usuario de MCA	Tamaño de lote	Intervalo de desconexión	Intervalo de pulsaciones	Núm máx de instancias	Núm máx de instancias por cliente	Descripción	Nombre de clúster	Lista de nombres de clústeres	Especificación de cifrado SSL	Compartición de conversaciones	Límite de datos de lotes
+CRC14AGN.A.CRC01CMM	Emisor	En ejecución	srv-vccs-mqftdev(1416)	CRC01CMM		50	0	300								5000
+CRC14AGN.A.CRC01CRD	Emisor	En ejecución	srv-vccs-mqftdev(1414)	CRC01CRD		50	0	300								5000
+CRC14AGN.A.CRC03AGN	Emisor	En ejecución	srv-vccs-mqftdev(1418)	CRC03AGN		50	0	300								5000
+
+luego tengo que irme a los Agentes de CRC01CMM, CRC01CRD y CRC03AGN 
+en la parte de Canales y ubicar el emisor del nuevo Agente e inicializarlos 
+
+Nombre de canal	Tipo de canal	Estado global del canal	Nombre de conexión	Cola de transmisión	ID de usuario de MCA	Tamaño de lote	Intervalo de desconexión	Intervalo de pulsaciones	Núm máx de instancias	Núm máx de instancias por cliente	Descripción	Nombre de clúster	Lista de nombres de clústeres	Especificación de cifrado SSL	Compartición de conversaciones	Límite de datos de lotes
+CRC03AGN.A.CRC04AGN	Emisor	En ejecución	srv-vccs-mqftdev(1422)	CRC04AGN		50	0	300								5000
+
+Nombre de canal	Tipo de canal	Estado global del canal	Nombre de conexión	Cola de transmisión	ID de usuario de MCA	Tamaño de lote	Intervalo de desconexión	Intervalo de pulsaciones	Núm máx de instancias	Núm máx de instancias por cliente	Descripción	Nombre de clúster	Lista de nombres de clústeres	Especificación de cifrado SSL	Compartición de conversaciones	Límite de datos de lotes
+CRC01CMM.A.CRC14AGN	Emisor	En ejecución	srv-vccs-mqftdev(1454)	CRC14AGN		50	0	300								5000
+
+Nombre de canal	Tipo de canal	Estado global del canal	Nombre de conexión	Cola de transmisión	ID de usuario de MCA	Tamaño de lote	Intervalo de desconexión	Intervalo de pulsaciones	Núm máx de instancias	Núm máx de instancias por cliente	Descripción	Nombre de clúster	Lista de nombres de clústeres	Especificación de cifrado SSL	Compartición de conversaciones	Límite de datos de lotes
+CRC01CRD.A.CRC14AGN	Emisor	En ejecución	srv-vccs-mqftdev(1454)	CRC14AGN		50	0	300								5000
+
+
+Ahora si en el agente CRC14AGN en canales debo ver a todos en ejecucion........
+
+En Transferencia de archivos gestinoda le doy boton derecho nueva configuracion y sigo el wizard
+selecciono el CRD en este caso CRC01CRD
+Selecciono el CMM en este caso CRC01CMM
+Nombre de la configuracion como era desarrollo yo le coloque Dev
+
+Luego cuando ya pueda ver en Transferencia de archivos gestinoda puedo seleccionar un agente y probar conexion
+
+Luego en Transferencia de archivos gestinoda en DEV le doy boton derecho conectar y ya ahi puedo desplegar la informacion y
+ver el estado de los agentes.
+
+Ya en el servidor de MQ esta listo los Agentes y su Canales, ahora necesitamos que el servidor destino
+tenga el agente instalado y configurado.
+
+Desde aqui lo descargo
+ http://www-01.ibm.com/software/lotus/passportadvantage/pao_customer.html
+el ID y clave
+  soporte.aplicaciones@credicard.com.ve
+  v4l13nt35
+
+Busco IBM Control Center Managed Server Monitoring for MQ File Transfer Agent. los hay para todos los sistmeas operativos
+
+Antes de instalar siempre verifica que tengas los accesos a los puertos 1414, 1416 y al del Qmanager
+LEER y no confundir en commander con el coordinator y el Qmanager creado. se recomienda configurarlo por DNS
+
+Ahora lo colocamos como servicio
+Creamos un usuario local.
+Deberia tener permisos.
+Abrimos una consola de CMD pero como administrador
+C:\> CD \IBM\WMQFTE\BIN
+C:\IBM\WMQFTE\BIN>fteStopAgent  CRC14AGN .AG (si existiera)
+
+C:\IBM\WMQFTE\BIN>fteModifyAgent -agentName CRC14AGN.AG -s -su usuario -sp password
+C:\IBM\WMQFTE\BIN>fteModifyAgent -agentName CRC14AGN.AG -s -su CRC12AGN -sp MQAg3nt3
+
+luego de ejecutar el comando anterior nos vamos a servicios y buscamos:
+o
+IBM
+o
+Agente
+
+fteAgentCRC14AGN46AGCRC14AGN
+le damos propiedades, nos vamos a Logon y lo colocamos en Local System Account y nos aseguramos que este automatico e iniciado
+
+
+La pruebas serian:
+Desde el MQ explorer en transferencia de archivos gestionada en Agentes debo ver el agente CRC14AGN en estatus preparado y
+desde ahi mismo puedo hacer boton derecho probar conectividad y le doy probar cuidado con la latencia de la red.
+otra cosa es ver desde el servidor MQ el netstat que este Established al igual que desde el servidor.
+netstat -ano | grep  -w 1454
+netstat -ano | find "1454"
+recuerda los permisos del FIREWALL
+
+Una prueba contundente es con le MQ explorer:
+Transferencia de archivos gestionada. selecciono el grupo en donde esta el agente (Prod, Dev, Qa) le damos conectar y expandimos, 
+nos vamos a plantillas de transferencia y le damos boton derecho nueva plantilla.
+En nombre de plantilla colocamos algo representativo EJ. PRUEBA-LOCAL
+*******	vamos hacer que se copie un archivo desde una estacion de trabajo hacia el AS400
+Agente Origen seleccionamos nuestro agente, que ya debe estar iniciado y operativo EJ. CTK01AG.AG
+Agente destino seleccionaos el correspondiente al AS400 EJ. CRC03AGN1.AG sea (Dev, Prod) depende de donde se configurara nuestro agente
+Sguiente
+le damos al boton añadir
+en el agente origen que es nuestra estacion de trabajo selecionamos un directorio y un archivo EJ. c:\temp\a.txt (ya debe estar creado)
+en el afente destino que es el AS400 seleccionamos /Temp
+aceptar y todo luego es siguiente o finalizar.
+
+Luego en plantillas de tranferencia debe estar la plantilla creada llamad PRUBA-LOCAL.
+le damos boton derecho sobre ella enviar y se debe producir el intercambio de archivos , en la parte de abajo se puede ver el historial.
+
+Despues que esto se haya hecho exitoso modificamos la plantilla de transferencia para que ahora envie desde el AS400 el archivo que le mandamos a nuestra estacion de trabajo
+
+Otra forma sin hacer plantilla es sobre transferencias de archivos gestionada dale clic derecho sobre el grupo y seleccionas Nueva Transferencia
+seleccionamos agente origen y agente destino
+archivos y fin
+
+http://www.ibm.com/support/knowledgecenter/SSFKSJ_7.5.0/com.ibm.wmqfte.doc/create_agent_cmd.htm
+
+Con estos comandos cree un agente en mi estacion de trabajo
+se guardo en C:\ProgramData\Application Data\IBM\WMQFTE\config\CRC01CRD\agents\CTK01AGN.AG
+
+cd c:\Program Files (x86)\IBM\WMQFTE\bin>
+
+
+>fteCreateAgent -agentName CTK01AGN.AG -agentQMgr CTK01AGN -agentQMgrHost srv-vccs-mqftdev -agentQMgrPort 1445 -agentQMgrChannel SYSTEM.DEF.SVRCONN -agentDesc "CESTA TICKET"
+
+Este es igual pero solo cambia el host
+
+>fteCreateAgent -agentName CTK01AGN.AG -agentQMgr CTK01AGN -agentQMgrHost 10.136.0.106 -agentQMgrPort 1445 -agentQMgrChannel SYSTEM.DEF.SVRCONN -agentDesc "CESTA TICKET"
+
+>fteStopAgent.cmd CTK01AGN.AG
+
+>fteDeleteAgent.cmd CTK01AGN.AG
+
+>fteStartAgent CTK01AGN.AG

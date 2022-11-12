@@ -1,0 +1,36 @@
+Para listar las tranferencia de un agente es
+
+
+
+[mqm@srv-vccs-mqfteprd]:/usr/local/bin> fteShowAgentDetails -v CRC03AGN1.AG
+
+Número máximo de transferencias de destino en ejecución: 25
+Estados de transferencias de destino:
+    TransferId                                          State
+    414d51204d49414f5720202020202020822c5b4a648c0b20    progress
+    414d51204d49414f5720202020202020822c5b4a346c0b20    progress
+
+
+
+
+
+
+Para eliminar la transferencias es :
+
+[mqm@srv-vccs-mqfteprd]:/usr/local/bin>  fteCancelTransfer -a CRC03AGN1.AG 414d51204d49414f5720202020202020822c5b4a648c0b20
+5655-MFT, 5724-H72 Copyright IBM Corp.  2008, 2014.  ALL RIGHTS RESERVED
+BFGPR0127W: No credentials file has been specified to connect to WebSphere MQ. Therefore, the assumption is that WebSphere MQ authentication has been disabled.
+BFGCL0137I: The request to cancel transfer '414d51204d49414f5720202020202020822c5b4a648c0b20' issued to agent 'BOD02AGN.AG'.
+BFGCL0196I: The transfer was successfully cancelled.
+
+
+
+Para eliminar todo lo que este encolado del AS400
+
+fteShowAgentDetails -v CRC03AGN1.AG | awk '{print $1}' | sed 's/^[a-z,A-Z]*//' | egrep -v ":|MFT" | sed '/^$/d' > mqtransfer
+
+fteShowAgentDetails -v CRC03AGN1.AG | awk '{print $1}'> mqtransfer
+
+Limpiar en el mqtransfer las lineas que no correspondes, esto es solo para acelerar el proceso
+
+for i in $(cat mqtransfer) ; do fteCancelTransfer -a CRC03AGN1.AG $i && sleep 1;done

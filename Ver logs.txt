@@ -1,0 +1,14 @@
+Un caso como este 
+Mediante la presente informo que las siguientes recargas abajo mencionadas .no se procesaron el ninguno de los horarios  11:00am y 12pm
+Por favor verificar e informar.
+ 
+RG03324003
+ 
+
+se puede ver en los logs del servidor
+cd /var/mqm/mqft/logs/CRC01CRD/loggers/FILELOGGER1
+grep 3323305 *
+FILELOGGER11-20160831073310294.log:2016-09-02T17:36:20;414d5120564c564e303141474e20202041fbc55710fe0020;[TPRO];0  ;C:\Credicard\Salida\RG03323305.txt;7402;file;delete;;;;;;/805/33/ENTRADA/RG03323305.txt;7402;file;         ;;;;;;;;
+FILELOGGER11-20160831073310294.log:2016-09-02T18:00:15;414d5120435243303341474e20202020a3fac557a5ff0920;[TPRO];0  ;/805/33/SALIDA/RG03323305.txt;7402;file;delete;;;;;;C:\Credicard\Entrada\RG03323305.txt;7402;file;         ;;;;;;;;
+FILELOGGER11-20160831073310294.log:2016-09-02T19:25:42;414d5120435243303341474e20202020a2fac557cd450010;[TPRO];0  ;/LIQUID/Prepago/RG 3323305.txt;7402;file;delete;;;;;;E:\Liquid\Prepago\RG03323305.txt;7402;file;         ;;;;;;;;
+grep: logs: Is a directory
