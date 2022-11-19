@@ -1,0 +1,448 @@
+Pre-requisitos: 
+==============
+
+Instalar Librerias Necesarias para el Cliente::
+
+
+	dnf -y install tar glibc.i686 glibc.x86_64 libgcc.x86_64 libgcc.i686 libstdc++ libX11.i686
+
+	dnf -y install libstdc++-devel-11.2.1-9.4.el9.i686 libstdc++-devel-11.2.1-9.4.el9.x86_64 libnsl-2.34-28.el9_0.2.i686 libnsl-2.34-28.el9_0.2.x86_64
+	
+Si estan con Rocky Linux 9 y se presenta este error al momento de iniciar la instalaciÛn::
+
+	java.lang.UnsatisfiedLinkError: fontmanager (/lib/libstdc++.so.5: version `GLIBCPP_3.2' not found (required by /tmp/install.dir.39471/Linux/resource/jre/jre/bin/libfontmanager.so))
+
+Deben descargar el siguietne paquete::
+
+	libstdc++5-3.3.6-19.mga9.x86_64.rpm
+	
+De algun repositorio de RPM y puede ser en::
+
+	https://rpmfind.net/linux/rpm2html/search.php?query=libstdc%2B%2B.so.5
+
+
+
+
+TIPS
+++++
+
+	/opt/wmqfte		UbicaciÛn de la instalaciÛn de IBM MQ
+	/opt/wmqfte/config	ruta de configuracion del agente creado para su empresa
+
+	CRC01CRD		QManager del Coordinator
+	CRC01CMM		QManager del Command	
+
+
+Descargar el instalador.  (Instalador suministrado por Credicard)
++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+Localizar los instaladores para el agente el cual comprende los archivos::
+
+	install.bin
+	silent_install.resp
+	silent_uninstall.resp
+	version.ini
+
+
+
+
+ Ejecutar el script install.bin
+ +++++++++++++++++++++++++++++++
+
+[root@srv-vccs-mqftdev]:/tmp/linux_x86>sh ./install.bin
+Preparing to install...
+Extracting the JRE from the installer archive...
+Unpacking the JRE...
+Extracting the installation resources from the installer archive...
+Configuring the installer for this system's environment...
+
+Launching installer...
+
+X11 connection rejected because of wrong authentication.
+
+Graphical installers are not supported by the VM. The console mode will be used instead...
+
+Preparing CONSOLE Mode Installation...
+
+===============================================================================
+Choose Locale...
+----------------
+
+    1- Deutsch
+  ->2- English
+    3- Espa√±ol
+    4- Fran√ßais
+    5- Portugu√™s  (Brasil)
+
+CHOOSE LOCALE BY NUMBER: 2
+===============================================================================
+                                                 (created with InstallAnywhere)
+-------------------------------------------------------------------------------
+
+
+
+
+===============================================================================
+Client - Introduction
+---------------------
+
+Welcome to the IBM WebSphere MQ File Transfer Edition - Client installation
+wizard.
+
+
+PRESS <ENTER> TO CONTINUE:  (presionamos Enter)
+===============================================================================
+
+
+
+
+    International Program License Agreement
+
+    Part 1 - General Terms
+
+    BY DOWNLOADING, INSTALLING, COPYING, ACCESSING, CLICKING ON AN
+    "ACCEPT" BUTTON, OR OTHERWISE USING THE PROGRAM, LICENSEE AGREES TO
+    THE TERMS OF THIS AGREEMENT. IF YOU ARE ACCEPTING THESE TERMS ON
+    BEHALF OF LICENSEE, YOU REPRESENT AND WARRANT THAT YOU HAVE FULL
+    AUTHORITY TO BIND LICENSEE TO THESE TERMS. IF YOU DO NOT AGREE TO
+    THESE TERMS,
+
+    - DO NOT DOWNLOAD, INSTALL, COPY, ACCESS, CLICK ON AN "ACCEPT" BUTTON,
+    OR USE THE PROGRAM; AND
+
+    - PROMPTLY RETURN THE UNUSED MEDIA, DOCUMENTATION, AND PROOF OF
+    ENTITLEMENT TO THE PARTY FROM WHOM IT WAS OBTAINED FOR A REFUND OF THE
+    AMOUNT PAID. IF THE PROGRAM WAS DOWNLOADED, DESTROY ALL COPIES OF THE
+    PROGRAM.
+
+
+Press Enter to continue viewing the license agreement, or enter "1" to
+   accept the agreement, "2" to decline it, "3" to print it, or "99" to go back
+   to the previous screen.:1  (escribimos 1 Enter)
+
+===============================================================================
+Product installation folder :
+-----------------------------
+
+Product installation folder : /opt/wmqfte
+
+  Default Install Folder: /opt/ibm/WMQFTE
+
+ENTER AN ABSOLUTE PATH, OR PRESS <ENTER> TO ACCEPT THE DEFAULT
+      : /opt/wmqfte
+
+INSTALL FOLDER IS: /opt/wmqfte
+   IS THIS CORRECT? (Y/N): Y
+
+
+
+===============================================================================
+IBM WebSphere MQ File Transfer Edition - Client already installed
+-----------------------------------------------------------------
+
+The product directory for IBM WebSphere MQ File Transfer Edition - Client
+already exists.
+What action do you wish to take ?
+
+  ->1- Select new product directory
+    2- Refresh existing install
+
+ENTER THE NUMBER OF THE DESIRED CHOICE, OR PRESS <ENTER> TO ACCEPT THE
+   DEFAULT: 2
+
+
+
+===============================================================================
+Configuration folder :
+-----------------------
+
+Enter requested information
+
+Data folder :  (DEFAULT: /var/ibm/WMQFTE/config): /opt/wmqfte/config
+
+
+
+
+===============================================================================
+Skip Configuration
+------------------
+
+
+
+    1- Yes
+  ->2- No
+
+ENTER THE NUMBER FOR YOUR CHOICE, OR PRESS <ENTER> TO ACCEPT THE DEFAULT:: 2
+
+
+===============================================================================
+Get Coordination Queue Manager:
+-------------------------------
+
+
+
+Coordination Queue Manager : (DEFAULT: ): CRC01CRD
+
+
+===============================================================================
+Coordination QMgr Host Name
+---------------------------
+
+Enter requested information
+
+Enter the host name of your coordination queue manager (DEFAULT: ): 10.136.0.108
+
+
+
+
+===============================================================================
+Coordination QMgr Port
+----------------------
+
+Enter requested information
+
+Enter the port number of your coordination queue manager. (DEFAULT: 1414): 1414
+
+
+
+
+===============================================================================
+
+===============================================================================
+Coordination QMgr Channel
+-------------------------
+
+Enter requested information
+
+Enter the channel name of your coordination queue manager. (DEFAULT:
+   SYSTEM.DEF.SVRCONN): Enter
+
+===============================================================================
+Agent Name
+----------
+
+Enter requested information
+
+Enter the name of your agent:  (DEFAULT: ): PRUEBA01AGN.AG
+
+
+===============================================================================
+Agent Description
+-----------------
+
+Enter requested information
+
+Agent description (DEFAULT: ): descripcion del agente
+
+
+===============================================================================
+Agent QMgr
+-----------
+
+Enter requested information
+
+Enter the agent's queue manager name: (DEFAULT: CRC01CRD): PRUEBA01AGN
+
+===============================================================================
+Agent QMgr Host Name
+--------------------
+
+
+
+Enter the host name of your agent queue manager. (DEFAULT: 10.136.0.108): 10.136.0.108
+
+
+
+
+
+===============================================================================
+Agent QMgr port
+---------------
+
+
+
+Enter the port number of your agent queue manager. (DEFAULT: 1414): 1450
+
+
+
+
+===============================================================================
+Agent QMgr Channel
+------------------
+
+Enter requested information
+
+Enter the channel name of your agent queue manager. (DEFAULT:
+   SYSTEM.DEF.SVRCONN):
+
+
+===============================================================================
+Command QMgr Name
+-----------------
+
+
+
+Command Queue Manager Name: (DEFAULT: CRC03AGN): CRC01CMM
+
+
+
+
+===============================================================================
+Command QMgr Host Name
+----------------------
+
+Enter requested information
+
+Enter the host name of your command queue manager. (DEFAULT: 10.136.0.108)
+   :
+
+
+
+
+===============================================================================
+Command QMgr Port
+-----------------
+
+Enter requested information
+
+Enter the port number of your command queue manager. (DEFAULT: 1418): 1416
+
+
+
+
+===============================================================================
+Command QMgr Channel
+--------------------
+
+Enter requested information
+
+Enter the channel name of your command queue manager. (DEFAULT:
+   SYSTEM.DEF.SVRCONN):
+
+===============================================================================
+Pre-Installation Summary
+------------------------
+
+Please Review the Following Before Continuing:
+
+Product Name:
+    IBM WebSphere MQ File Transfer Edition - Client
+
+Product installation directory:
+    /opt/wmqfte
+
+Product configuration directory:
+    /opt/wmqfte/config
+
+Coordination Queue Manager:
+    CRC01CRD
+
+Coordination Queue Manager Host Name:
+    10.136.0.108
+
+Coordination Queue Manager Port:
+    1414
+
+Coordination Queue Manager Channel:
+    SYSTEM.DEF.SVRCONN
+
+Agent Name:
+    PRUEBA01AGN
+
+Agent Queue Manager:
+    PRUEBA01AGN.AG
+
+Agent Queue Manager Host:
+    10.136.0.108
+
+Agent Queue Manager Port:
+    1450
+
+Agent Queue Manager Channel:
+    SYSTEM.DEF.SVRCONN
+
+Command Queue Manager:
+    CRC01CMM
+
+Command Queue Manager Host:
+    10.136.0.108
+
+Command Queue Manager Port:
+    1416
+
+Command Queue Manager Channel:
+    SYSTEM.DEF.SVRCONN
+
+Disk Space Information (for Installation Target):
+    Required:  94,582,735 bytes
+    Available: 2,036,600,832 bytes
+===============================================================================
+Ready To Install
+----------------
+
+InstallAnywhere is now ready to install IBM WebSphere MQ File Transfer Edition
+- Client onto your system at the following location:
+
+   /opt/wmqfte
+
+PRESS <ENTER> TO INSTALL: Enter
+
+
+
+
+===============================================================================
+Installing...
+-------------
+
+ [==================|==================|==================|==================]
+ [------------------|------------------|------------------|------------------]
+
+
+
+===============================================================================
+Run on Coordination Queue Manager
+---------------------------------
+
+/opt/wmqfte/config/CRC01CRD/CRC01CRD.mqsc has been created.
+
+Ensure this file has been run against the coordination queue manager CRC01CRD
+before attempting file transfers.
+This can be done by redirecting the contents of the file CRC01CRD.mqsc into a
+runmqsc session.
+
+PRESS <ENTER> TO CONTINUE:
+
+
+
+===============================================================================
+Run on Agent Queue Manager
+--------------------------
+
+/opt/wmqfte/config/CRC01CRD/agents/PRUEBA01AGN.AG/PRUEBA01AGN.AG_create.mqsc
+
+Ensure this file has been run against the agent queue manager PRUEBA01AGN
+before attempting file transfers.
+This can be done by redirecting the contents of the file
+PRUEBA01AGN.AG_create.mqsc into a runmqsc session
+
+PRESS <ENTER> TO CONTINUE:
+
+
+
+===============================================================================
+Installation Complete
+---------------------
+
+You have successfully installed IBM WebSphere MQ File Transfer Edition - Client
+to:
+
+/opt/wmqfte
+
+
+PRESS <ENTER> TO EXIT THE INSTALLER:
+
+
+
+
+
